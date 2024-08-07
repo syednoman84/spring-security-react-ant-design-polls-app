@@ -158,7 +158,7 @@ class PollList extends Component {
                 {
                     !this.state.isLoading && this.state.polls.length === 0 ? (
                         <div className="no-polls-found">
-                            <span>No Polls Found.</span>
+                            <span>No Polls Found New.</span>
                         </div>    
                     ): null
                 }  

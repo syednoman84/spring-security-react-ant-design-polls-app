@@ -1,0 +1,99 @@
+// pipeline {
+//     agent any
+    
+//     stages {
+//         stage('Checkout') {
+//             steps {
+//                 // Checkout the source code from the repository
+//                 checkout scm
+//             }
+//         }
+        
+//         stage('Docker Compose Build') {
+//             steps {
+//                 script {
+//                     // Print Docker and Docker Compose versions for logging and verification
+//                     bat 'docker --version'
+//                     bat 'docker-compose --version'
+
+//                     // Build Docker images using Docker Compose
+//                     bat 'docker-compose build'
+//                 }
+//             }
+//         }
+
+//         stage('Docker Compose Up') {
+//             steps {
+//                 script {
+//                     // Start Docker containers using Docker Compose
+//                     bat 'docker-compose up -d'
+//                 }
+//             }
+//         }
+//     }
+
+    
+// }
+pipeline {
+      agent any
+    stages {
+        stage('Checkout') {
+            steps {
+                // Checkout the source code from the repository
+                checkout scm
+            }
+        }
+
+    // stage('Initialize'){
+    //      steps {
+    //         script {
+    //             def dockerHome = tool 'myDocker'
+    //             env.PATH = "${dockerHome}/bin:${env.PATH}"
+    //         }
+    //      }
+    // }
+
+  stage('Docker Compose Build') {
+            steps {
+                script {
+                    // Print Docker and Docker Compose versions for logging and verification
+                    sh 'docker --version'
+                    // sh 'docker compose --version'
+
+                    // Build Docker images using Docker Compose
+                    sh 'docker compose build --no-cache'
+                }
+            }
+        }
+
+        stage('Docker Compose Up') {
+            steps {
+                script {
+                    // Start Docker containers using Docker Compose
+                    sh 'docker compose up -d'
+                }
+            }
+        }
+    }
+
+    //     stage('Build Docker Images') {
+    //         steps {
+    //             script {
+    //                 // Running docker-compose build
+    //                 sh 'docker-compose build'
+    //             }
+    //         }
+    //     }
+
+    //     stage('Start Containers') {
+    //         steps {
+    //             script {
+    //                 // Running docker-compose up with -d to run containers in the background
+    //                 sh 'docker-compose up -d'
+    //             }
+    //         }
+    //     }
+    // }
+
+   
+}

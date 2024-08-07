@@ -1,5 +1,5 @@
 #### Stage 1: Build the application
-FROM adoptopenjdk/openjdk11:x86_64-alpine-jdk-11.0.11_9-slim as build
+FROM openjdk:11 as build
 
 # Set the current working directory inside the image
 WORKDIR /app
@@ -11,12 +11,13 @@ COPY .mvn .mvn
 # Copy the pom.xml file
 COPY pom.xml .
 
-RUN dos2unix ./mvnw
-
 # Build all the dependencies in preparation to go offline. 
 # This is a separate step so the dependencies will be cached unless 
 # the pom.xml file has changed.
-RUN ./mvnw dependency:go-offline -B
+RUN chmod +x mvnw
+RUN sed -i 's/\r$//' mvnw
+RUN ./mvnw dependency:go-offline
+# RUN ./mvnw dependency:go-offline -B
 
 # Copy the project source
 COPY src src
@@ -26,7 +27,9 @@ RUN ./mvnw package -DskipTests
 RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
 
 #### Stage 2: A minimal docker image with command to run the app 
-FROM adoptopenjdk/openjdk11:x86_64-alpine-jdk-11.0.11_9-slim
+FROM openjdk:11
+
+EXPOSE 8080
 
 ARG DEPENDENCY=/app/target/dependency
 
